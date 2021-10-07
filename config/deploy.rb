@@ -2,7 +2,7 @@
 server 'irisdev-peerlogic.corp.ooma.com', roles: [:web, :app, :db], primary: true
 
 set :repo_url,        'git@github.com:NehaPeer/rails_6_app.git'
-set :application,     'rails_6_app'
+set :application,     'appname'
 set :user,            'iris'
 set :puma_threads,    [4, 16]
 set :puma_workers,    0
