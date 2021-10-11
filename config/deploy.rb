@@ -1,5 +1,5 @@
 # Change these
-server 'irisdev-peerlogic.corp.ooma.com', roles: [:web, :app, :db], primary: true
+server 'irisdev', roles: [:web, :app, :db], primary: true
 
 set :repo_url,        'git@github.com:NehaPeer/rails_6_app.git'
 set :application,     'appname'
@@ -22,7 +22,7 @@ set :puma_error_log,  "#{release_path}/log/puma.access.log"
 set :puma_preload_app, true
 set :puma_worker_timeout, nil
 set :puma_init_active_record, true  # Change to false when not using ActiveRecord
-
+set :rvm_ruby_version, 'ruby-2.7.3@iris-6'
 ## Defaults:
 # set :scm,           :git
 # set :branch,        :master
@@ -39,6 +39,7 @@ namespace :puma do
   task :make_dirs do
     on roles(:app) do
       execute "mkdir #{shared_path}/tmp/sockets -p"
+      puts "in puma"
       execute "mkdir #{shared_path}/tmp/pids -p"
     end
   end
@@ -50,8 +51,8 @@ namespace :deploy do
   desc "Make sure local git is in sync with remote."
   task :check_revision do
     on roles(:app) do
-      unless `git rev-parse HEAD` == `git rev-parse origin/master`
-        puts "WARNING: HEAD is not the same as origin/master"
+      unless `git rev-parse HEAD` == `git rev-parse master`
+        puts "WARNING: HEAD is not the same as origin main"
         puts "Run `git push` to sync changes."
         exit
       end
@@ -76,7 +77,7 @@ namespace :deploy do
   before :starting,     :check_revision
   after  :finishing,    :compile_assets
   after  :finishing,    :cleanup
-  after  :finishing,    :restart
+#  after  :finishing,    :restart
 end
 
 # ps aux | grep puma    # Get puma pid
